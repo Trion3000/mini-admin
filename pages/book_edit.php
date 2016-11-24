@@ -1,6 +1,8 @@
 <?php
 
-require 'models/book.php';
+require 'models/BookModel.php';
+$bookModel = new BookModel($pdo);
+
 
 $id = get('id');
 
@@ -23,7 +25,7 @@ if ($id === null) {
     // edit by id
     echo 'edit #' . $id;
 
-    $book = findBookById($id);
+    $book = $bookModel->findById($id);
 }
 
 ?>

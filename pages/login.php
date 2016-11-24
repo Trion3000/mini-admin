@@ -1,6 +1,7 @@
 <?php
 
-require 'models/user.php';
+require 'models/UserModel.php';
+$userModel = new UserModel();
 // findUser('admin@adminka.com', 'komarik333');
 
 if (requestIsPost()) {
@@ -8,18 +9,22 @@ if (requestIsPost()) {
         $user['username'] = post('username'); // $_POST['username']
         $user['password'] = post('password');
 
-        $user = findUser($user['username'], $user['password']);
+        $salt = 'salt'; // any text
 
-        if ($user !== null) {
-            $_SESSION['user'] = $user['email'];
-            setFlash('Signed in');
+        $password = md5(md5($salt) . $user['password']);
+        $user = $userModel->findUser($user['username'], $password);
+        
+        if ($user) {
+            Session::set('user', $user['email']);
+            Session::setFlash('Signed in');
+            // Router
             redirect('/index.php');
         }
 
-        setFlash('User not found');
+        Session::setFlash('User not found');
         redirect('/index.php?page=login');
     }
-    setFlash('Fill the fields');
+    Session::setFlash('Fill the fields');
 }
 ?>
 

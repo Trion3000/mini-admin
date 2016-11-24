@@ -1,19 +1,20 @@
 <?php
 
-require 'models/book.php';
+require 'models/BookModel.php';
+$bookModel = new BookModel($pdo);
 
-$books = findAllBooks();
+$books = $bookModel->findAll();
 
 if (get('action') == 'delete' && get('id')) {
     $id = get('id');
-    $res = removeBookById($id);
+    $res = $bookModel->removeById($id);
 
     if ($res === false) {
-        setFlash('Error');
+        Session::setFlash('Error');
         redirect('/index.php?page=book_list');
     }
 
-    setFlash('Removed book #' . $id);
+    Session::setFlash('Removed book #' . $id);
     redirect('/index.php?page=book_list');
 }
 
